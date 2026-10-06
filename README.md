@@ -142,21 +142,18 @@ Alternatively, you can run the entire ecosystem using Docker:
 Deploying to [Railway](https://railway.com/) is fully automated:
 1. **Connect Repository:**
    - Link your GitHub repository `krishnananbu/ecommerce` to a new Railway project.
-2. **Add PostgreSQL Service:**
-   - Click **+ New** -> **Database** -> **PostgreSQL**.
-   - Railway will automatically provision Postgres and make `DATABASE_URL` available to your web service.
+2. **Add Railway PostgreSQL Database:**
+   - Click **+ New** -> **Database** -> **Add PostgreSQL**.
+   - Railway will automatically provision PostgreSQL and bind `DATABASE_URL` directly to your web service.
 3. **Configure Environment Variables (in Railway Dashboard):**
-   - `SECRET_KEY`: Set a secure random string.
+   - `SECRET_KEY`: Set a secure random string for production.
    - `DEBUG`: `False`
-   - `ALLOWED_HOSTS`: `*` (or your railway domain)
+   - `ALLOWED_HOSTS`: `*` (or your Railway domain)
    - `CSRF_TRUSTED_ORIGINS`: `https://*.railway.app,https://*.up.railway.app`
    - `EMAIL_HOST_USER`: (Optional) Your Gmail address
    - `EMAIL_HOST_PASSWORD`: (Optional) Your Gmail App Password
-   - `CLOUDINARY_CLOUD_NAME`: (Optional) If using Cloudinary for media uploads
-   - `CLOUDINARY_API_KEY`: (Optional)
-   - `CLOUDINARY_API_SECRET`: (Optional)
 4. **Automatic Deployment:**
-   - Railway will build the Docker container using `Dockerfile` and run migrations, static file collection, and superuser initialization automatically on start!
+   - Railway builds the container using `Dockerfile`, waits for PostgreSQL readiness, runs migrations, collects static assets via WhiteNoise, and creates the default superuser automatically on startup!
 
 ---
 

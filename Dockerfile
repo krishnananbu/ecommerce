@@ -30,8 +30,8 @@ RUN pip install --upgrade pip && \
 # Copy the rest of the application code
 COPY . /app/
 
-# Create logs directory
-RUN mkdir -p /app/ecommerce/logs
+# Create logs and media directories
+RUN mkdir -p /app/ecommerce/logs /app/ecommerce/media
 
 # Make the entrypoint script executable
 RUN chmod +x /app/docker-entrypoint.sh

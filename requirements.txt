@@ -9,8 +9,6 @@ django-model-utils>=5.0.0
 
 # Media & Images
 pillow>=10.0.0
-cloudinary>=1.40.0
-django-cloudinary-storage>=0.3.0
 
 # PDF & Invoicing
 xhtml2pdf>=0.2.17
