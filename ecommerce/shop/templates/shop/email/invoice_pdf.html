@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ order.tracking_number }}</title>
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 2cm;
+        }
+
+        .header {
+            border-bottom: 2px solid #0000FF;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-text {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #0000FF;
+        }
+
+        .invoice-title {
+            text-align: right;
+            font-size: 20pt;
+            font-weight: bold;
+            color: #0000CC;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .info-table td {
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .section-title {
+            font-size: 10pt;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .items-table th {
+            background-color: #f1f5f9;
+            text-align: left;
+            padding: 12px 10px;
+            font-size: 9pt;
+            text-transform: uppercase;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .items-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .total-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .total-row {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #0000FF;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 9pt;
+            color: #94a3b8;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <table width="100%">
+            <tr>
+                <td class="logo-text">Swiftbuy</td>
+                <td class="invoice-title">INVOICE</td>
+            </tr>
+        </table>
+    </div>
+    <table class="info-table">
+        <tr>
+            <td>
+                <div class="section-title">Billed To</div>
+                <strong>{{ order.first_name }} {{ order.last_name }}</strong><br>
+                {{ order.address }}<br>
+                {{ order.city }}, {{ order.state }} {{ order.zip_code }}<br>
+                Email: {{ order.email }}
+            </td>
+            <td style="text-align:right;">
+                <div class="section-title">Order Information</div>
+                Order #: <strong>{{ order.tracking_number }}</strong><br>
+                Date: {{ order.created_at|date:"F j, Y" }}<br>
+                Status: {{ order.get_status_display }}
+            </td>
+        </tr>
+    </table>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Item Description</th>
+                <th width="80">Price</th>
+                <th width="40">Qty</th>
+                <th width="100" style="text-align:right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>${{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td style="text-align:right;">${{ item.get_total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="total-section">
+        <table align="right">
+            <tr>
+                <td style="text-align:right; padding-right:20px; color:#64748b;">Subtotal:</td>
+                <td style="text-align:right;">${{ order.subtotal }}</td>
+            </tr>
+            <tr class="total-row">
+                <td style="text-align:right; padding-right:20px;">Total Amount Paid:</td>
+                <td style="text-align:right;">${{ order.total_amount }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="footer">
+        Thank you for shopping with Swiftbuy! support: {{ contact_email }}
+    </div>
+</body>
+
+</html>

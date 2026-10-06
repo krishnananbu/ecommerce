@@ -1,0 +1,498 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Swiftbuy | Online Shopping Store{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'logo/logo.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'logo/logo.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'logo/logo.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logo/logo.png' %}">
+    <meta name="theme-color" content="#0000FF">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Modern Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="{% static 'css/order.css' %}?v=5.1" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4.0">
+    <style>
+        body {
+            background-color: var(--white);
+            color: var(--text);
+        }
+
+        .header {
+            background: #fff;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .search-input-modern {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            background: #f1f5f9;
+            transition: all 0.3s;
+        }
+
+        .search-input-modern:focus {
+            background: white;
+            border-color: var(--p-color);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            outline: none;
+        }
+    </style>
+    <style>
+        /* Top Bar */
+        .top-bar {
+            background: var(--light);
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .top-bar .usd-dropdown {
+            margin-right: 20px;
+        }
+
+        .top-bar-link {
+            color: var(--text);
+            text-decoration: none;
+            margin-left: 20px;
+            transition: var(--transition);
+        }
+
+        .top-bar-link:hover {
+            color: var(--primary);
+        }
+
+        /* Header */
+        .header {
+            padding: 15px 0;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo-img {
+            height: 180px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover .logo-img {
+            transform: translateY(-2px);
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+        }
+
+        .search-form {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-form input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .search-form input:focus {
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+
+        .search-form button {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .search-form button:hover {
+            color: var(--primary);
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-link {
+            color: var(--heading);
+            font-weight: 500;
+            padding: 20px !important;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 0;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background: var(--light);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        /* Cart & User Menu */
+        .header-action {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .action-btn {
+            position: relative;
+            color: var(--heading);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            color: var(--primary);
+        }
+
+        .action-btn .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--secondary);
+            color: white;
+            font-size: 10px;
+            padding: 4px 6px;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn i {
+            font-size: 22px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar d-none d-lg-block">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="top-bar-left">
+                        <select class="form-select-sm border-0 bg-transparent usd-dropdown">
+                            <option>USD</option>
+                            <option>EUR</option>
+                            <option>GBP</option>
+                        </select>
+                        <a href="{% url 'shop:track_order' %}" class="top-bar-link">Track Order</a>
+                        <a href="#" class="top-bar-link">Help</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-end">
+                    <a href="#" class="top-bar-link">Shipping Policy</a>
+                    <a href="#" class="top-bar-link">FAQ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3">
+                    <a href="{% url 'shop:product_list' %}" class="navbar-brand">
+                        <div style="display: flex; align-items: center;">
+                            <img src="{% static 'logo/logo.png' %}" alt="Swiftbuy" class="logo-img"
+                                style="height: 40px; width: auto;"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                            <i class="fas fa-shopping-bag"
+                                style="display: none; color: #0000FF; font-size: 28px; margin-right: 10px;"></i>
+                        </div>
+                        <span class="logo-text">Swiftbuy</span>
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <form class="search-form-wrapper position-relative" action="{% url 'shop:product_list' %}"
+                        method="get">
+                        <input type="text" name="search" class="search-input-modern"
+                            placeholder="Search for products..." value="{{ request.GET.search }}">
+                        <button type="submit"
+                            style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--primary); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-search" style="font-size: 13px;"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="col-lg-3">
+                    <div class="header-action">
+                        {% if user.is_authenticated %}
+                        <div class="user-dropdown">
+                            <a href="#" class="action-btn">
+                                <i class="far fa-user"></i>
+                            </a>
+                            <div class="user-menu border-0 shadow-lg">
+                                <div class="px-4 py-3">
+                                    <p class="mb-0 fw-bold">Hello, {{user.first_name|default:user.username}}</p>
+                                    <small class="text-muted">Personal Dashboard</small>
+                                </div>
+                                <hr class="my-0">
+                                <a href="{% url 'accounts:profile' %}" class="user-menu-link">
+                                    <i class="fas fa-user-circle"></i>
+                                    My Profile
+                                </a>
+                                <a href="{% url 'shop:order_list' %}" class="user-menu-link">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    My Orders
+                                </a>
+                                <a href="{% url 'shop:track_order' %}" class="user-menu-link">
+                                    <i class="fas fa-truck"></i>
+                                    Track Order
+                                </a>
+                                {% if user.is_staff %}
+                                <hr class="my-0">
+                                <a href="{% url 'admin_dashboard' %}" class="user-menu-link text-primary fw-bold">
+                                    <i class="fas fa-chart-line"></i>
+                                    Dashboard
+                                </a>
+                                {% endif %}
+                                <hr class="my-0">
+                                <a href="{% url 'accounts:logout' %}" class="user-menu-link text-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="user-dropdown">
+                            <a href="#" class="action-btn">
+                                <i class="far fa-user"></i>
+                            </a>
+                            <div class="user-menu border-0 shadow-lg">
+                                <div class="px-4 py-3">
+                                    <p class="mb-0 fw-bold">Welcome!</p>
+                                    <small class="text-muted">Choose your portal</small>
+                                </div>
+                                <hr class="my-0">
+                                <a href="{% url 'accounts:customer_login' %}" class="user-menu-link">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    Customer Login
+                                </a>
+                                <a href="{% url 'accounts:admin_login' %}" class="user-menu-link">
+                                    <i class="fas fa-user-shield"></i>
+                                    Admin Login
+                                </a>
+                                <hr class="my-0">
+                                <a href="{% url 'accounts:register' %}" class="user-menu-link">
+                                    <i class="fas fa-user-plus"></i>
+                                    Register
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'shop:order_list' %}" class="action-btn" title="My Orders">
+                            <i class="fas fa-box-open"></i>
+                        </a>
+                        <a href="{% url 'shop:cart_detail' %}" class="btn-cart-modern">
+                            <i class="fas fa-shopping-cart" style="font-size: 22px;"></i>
+                            {% with total_items=cart|length %}
+                            <span class="cart-badge-modern">{{ total_items|default:0 }}</span>
+                            {% endwith %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <ul class="nav justify-content-center">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'shop:product_list' %}">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                Categories
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% for cat in categories %}
+                                <li><a class="dropdown-item" href="{% url 'shop:category_products' cat.slug %}">{{ cat.name }}</a></li>
+                                {% empty %}
+                                <li><a class="dropdown-item" href="{% url 'shop:category_products' 'electronics' %}">Electronics</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:category_products' 'fashion' %}">Fashion</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:category_products' 'home-living' %}">Home & Living</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:category_products' 'sports' %}">Sports & Outdoors</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:category_products' 'beauty-personal-care' %}">Beauty & Personal Care</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                Shop
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'shop:product_list' %}?sort_by=-created_at">New Arrivals</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:product_list' %}?featured_only=on">Featured Items</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:product_list' %}?available_only=on">In Stock Only</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:product_list' %}">All Products</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'shop:track_order' %}">Track Order</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'shop:cart_detail' %}">Cart</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4">
+                    <div class="footer-widget">
+                        <a href="{% url 'shop:product_list' %}" class="navbar-brand mb-4 d-inline-block">
+                            <span class="logo-text">Swiftbuy</span>
+                        </a>
+                        <p>Your premium shopping destination for quality products and exceptional service. We offer a
+                            wide range of products at competitive prices.</p>
+                        <div class="social-links mt-4">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.linkedin.com/in/sivanarul-anbu-874b701b9/"><i
+                                    class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer-widget">
+                        <h5>Quick Links</h5>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'shop:product_list' %}">Shop</a></li>
+                            <li><a href="{% url 'shop:track_order' %}">Track Order</a></li>
+                            <li><a href="{% url 'shop:cart_detail' %}">Cart</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer-widget">
+                        <h5>Account</h5>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'accounts:profile' %}">My Account</a></li>
+                            <li><a href="{% url 'shop:order_list' %}">Orders</a></li>
+                            <li><a href="{% url 'shop:track_order' %}">Track Order</a></li>
+                            <li><a href="{% url 'shop:cart_detail' %}">Shopping Cart</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="footer-widget">
+                        <h5>Newsletter</h5>
+                        <p>Subscribe to our newsletter for updates and exclusive offers.</p>
+                        <form class="newsletter-form mt-4">
+                            <input type="email" class="form-control" placeholder="Your email address">
+                            <button type="submit">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom text-center">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="mb-0">© 2025 Swiftbuy. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/ui-enhancements.js' %}"></script>
+    <script>
+        // Enable Bootstrap dropdowns on hover
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('mouseover', function () {
+                    this.querySelector('.dropdown-menu').classList.add('show');
+                });
+                dropdown.addEventListener('mouseleave', function () {
+                    this.querySelector('.dropdown-menu').classList.remove('show');
+                });
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

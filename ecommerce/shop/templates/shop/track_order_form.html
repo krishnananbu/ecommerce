@@ -1,0 +1,85 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Track Order - Swiftbuy{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="text-center mb-4">Track Your Order</h4>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" class="track-order-form">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="tracking_number" class="form-label">Enter Your Tracking Number</label>
+                            <input type="text" name="tracking_number" id="tracking_number" class="form-control" required
+                                placeholder="e.g., ABC123XYZ">
+                            <div class="form-text">
+                                You can find your tracking number in your order confirmation email.
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Track Order</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-2">Don't have a tracking number?</p>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'shop:order_list' %}" class="btn btn-outline-primary">View Your Orders</a>
+                        {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary">Login to View Orders</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5>Need Help?</h5>
+                    <p class="mb-0">If you're having trouble tracking your order, please contact our customer support:
+                    </p>
+                    <ul class="list-unstyled mt-3">
+                        <li>
+                            <i class="fas fa-envelope me-2"></i>
+                            Email: support@swiftbuy.com
+                        </li>
+                        <li>
+                            <i class="fas fa-phone me-2"></i>
+                            Phone: +1 (555) 123-4567
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .track-order-form input {
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .track-order-form .btn {
+        padding: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .help-icon {
+        color: var(--primary);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Delivered - Swiftbuy</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        img {
+            border: 0;
+            display: block;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            margin: 40px auto;
+            max-width: 600px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .logo-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto 20px;
+            object-fit: contain;
+        }
+
+        .hero-title {
+            color: #ffffff;
+            margin: 0;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .msg {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .success-banner {
+            background-color: #f0fdf4;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 32px;
+            border: 1px solid #dcfce7;
+        }
+
+        .success-msg {
+            color: #166534;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            color: #1e293b;
+            font-weight: 700;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .item-row {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #334155;
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .item-qty {
+            color: #94a3b8;
+            font-size: 12px;
+            margin: 4px 0 0;
+        }
+
+        .total-section {
+            padding-top: 20px;
+            text-align: right;
+        }
+
+        .total-label {
+            color: #64748b;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .total-value {
+            color: #1e3a8a;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .attachment-note {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 32px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .footer {
+            background-color: #f1f5f9;
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="cid:logo" alt="Swiftbuy" class="logo-circle">
+            <h1 class="hero-title">Order Delivered! ✨</h1>
+        </div>
+        <div class="content">
+            <p class="greeting">Hi {{ order.first_name }},</p>
+            <p class="msg">We're happy to let you know that your order #{{ order.tracking_number }} has been
+                successfully delivered! We hope you love your new products.</p>
+            <div class="success-banner">
+                <p class="success-msg">✅ DELIVERED SUCCESSFULLY</p>
+            </div>
+            <h3 class="summary-title">Delivered Items</h3>
+            <table>
+                {% for item in items %}
+                <tr class="item-row">
+                    <td style="padding:16px 0;">
+                        <p class="item-name">{{ item.product.name }}</p>
+                        <p class="item-qty">Qty: {{ item.quantity }}</p>
+                    </td>
+                    <td align="right" style="padding:16px 0;">
+                        <span style="color:#1e293b; font-weight:700;">${{ item.get_total_price }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="total-section">
+                <span class="total-label">Total Paid:</span>
+                <span class="total-value">${{ order.total_amount }}</span>
+            </div>
+            <div class="attachment-note">
+                <p style="margin:0; font-size:14px; color:#475569;">📎 Attached: We've included a PDF copy of your
+                    official invoice with this email.</p>
+            </div>
+            <div
+                style="text-align:center; margin-top:40px; padding-top:30px; border-top:1px solid #f1f5f9; color:#64748b; font-size:14px;">
+                Need help? support: {{ contact_email }}
+            </div>
+        </div>
+        <div class="footer">
+            &copy; {{ now|date:"Y" }} Swiftbuy. Quality products, delivered with care.
+        </div>
+    </div>
+</body>
+
+</html>

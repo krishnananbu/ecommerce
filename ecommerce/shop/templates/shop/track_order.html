@@ -1,0 +1,236 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Track Order #{{ order.tracking_number }} - Swiftbuy{% endblock %}
+
+{% block content %}
+<div class="order-confirmation-container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}" class="text-decoration-none text-muted">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shop:order_list' %}" class="text-decoration-none text-muted">My Orders</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Track #{{ order.tracking_number }}</li>
+        </ol>
+    </nav>
+
+    <div class="confirmation-hero-card">
+        <!-- Hero Header -->
+        <div class="p-4 p-md-5 pb-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-primary text-white px-3 py-1 rounded-pill fw-semibold">
+                            Live Tracking
+                        </span>
+                        <span class="status-badge status-{{ order.status }}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+                    <h2 class="confirmation-title mb-1">Tracking #{{ order.tracking_number }}</h2>
+                    {% if order.estimated_delivery %}
+                    <p class="text-success mb-0 fw-semibold">
+                        <i class="fas fa-calendar-check me-1"></i> Estimated Arrival: {{ order.estimated_delivery|date:"l, F d, Y" }}
+                    </p>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{% url 'shop:order_detail' order_id=order.id %}" class="btn-action-secondary">
+                        <i class="fas fa-file-lines"></i> Order Details
+                    </a>
+                    <a href="{% url 'shop:order_invoice' order_id=order.id %}" class="btn-action-secondary" target="_blank">
+                        <i class="fas fa-file-pdf text-danger"></i> Invoice
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logistics Stepper -->
+        <div class="stepper-section">
+            <div class="stepper-header">
+                <h3 class="stepper-title">
+                    <i class="fas fa-route"></i> Shipment Progress
+                </h3>
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+                    Courier: {{ order.courier_service.name|default:"Swiftbuy Express Priority" }}
+                </span>
+            </div>
+
+            <div class="stepper-track-container">
+                <div class="stepper-track-bg"></div>
+                <div class="stepper-track-fill" style="width: {{ progress_percentage }}%;"></div>
+
+                <div class="stepper-nodes">
+                    <!-- Step 1: Placed -->
+                    <div class="stepper-step completed">
+                        <div class="step-bubble">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="step-name">Placed</div>
+                        <div class="step-caption">Order Accepted</div>
+                    </div>
+
+                    <!-- Step 2: Processing -->
+                    <div class="stepper-step {% if order.status == 'processing' %}active{% elif order.status in 'confirmed,shipped,out_for_delivery,delivered' %}completed{% endif %}">
+                        <div class="step-bubble">
+                            {% if order.status in 'confirmed,shipped,out_for_delivery,delivered' %}
+                                <i class="fas fa-check"></i>
+                            {% else %}
+                                <i class="fas fa-gear"></i>
+                            {% endif %}
+                        </div>
+                        <div class="step-name">Processing</div>
+                        <div class="step-caption">Packaging</div>
+                    </div>
+
+                    <!-- Step 3: Confirmed / Shipped -->
+                    <div class="stepper-step {% if order.status == 'shipped' or order.status == 'confirmed' %}active{% elif order.status in 'out_for_delivery,delivered' %}completed{% endif %}">
+                        <div class="step-bubble">
+                            {% if order.status in 'out_for_delivery,delivered' %}
+                                <i class="fas fa-check"></i>
+                            {% else %}
+                                <i class="fas fa-truck-fast"></i>
+                            {% endif %}
+                        </div>
+                        <div class="step-name">Shipped</div>
+                        <div class="step-caption">In Transit</div>
+                    </div>
+
+                    <!-- Step 4: Out for Delivery -->
+                    <div class="stepper-step {% if order.status == 'out_for_delivery' %}active{% elif order.status == 'delivered' %}completed{% endif %}">
+                        <div class="step-bubble">
+                            {% if order.status == 'delivered' %}
+                                <i class="fas fa-check"></i>
+                            {% else %}
+                                <i class="fas fa-box-open"></i>
+                            {% endif %}
+                        </div>
+                        <div class="step-name">Out for Delivery</div>
+                        <div class="step-caption">On Vehicle</div>
+                    </div>
+
+                    <!-- Step 5: Delivered -->
+                    <div class="stepper-step {% if order.status == 'delivered' %}completed active{% endif %}">
+                        <div class="step-bubble">
+                            <i class="fas fa-house-chimney-check"></i>
+                        </div>
+                        <div class="step-name">Delivered</div>
+                        <div class="step-caption">Completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="confirmation-body">
+            <div class="row g-4">
+                <!-- Left Column: Timeline & Items -->
+                <div class="col-lg-7">
+                    <!-- Event Timeline -->
+                    <div class="info-card-box mb-4">
+                        <div class="info-card-title">
+                            <i class="fas fa-timeline"></i> Tracking History Events
+                        </div>
+                        <div class="timeline ps-2">
+                            {% for status in order.status_updates.all %}
+                            <div class="timeline-item">
+                                <div class="timeline-date fw-semibold text-primary">
+                                    {{ status.timestamp|date:"M d, Y" }} · {{ status.timestamp|time:"h:i A" }}
+                                </div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1 fw-bold">{{ status.get_status_display }}</h6>
+                                    {% if status.note %}
+                                    <p class="text-muted small mb-0">{{ status.note }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-muted small py-2">
+                                <i class="fas fa-info-circle me-1"></i> Your shipment is booked and waiting for carrier pickup scan.
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Items Included -->
+                    <div class="order-items-card">
+                        <div class="items-header">
+                            <h5><i class="fas fa-boxes-stacked text-primary"></i> Package Contents</h5>
+                            <span class="item-count-badge">{{ order.items.count }} items</span>
+                        </div>
+                        {% for item in order.items.all %}
+                        <div class="order-item-row">
+                            <div class="item-image-wrapper">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                {% else %}
+                                    <div class="item-placeholder-icon">
+                                        <i class="fas fa-cube"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="item-info">
+                                <span class="item-title">{{ item.product.name }}</span>
+                                <div class="item-specs">
+                                    <span class="item-qty-tag">Qty: {{ item.quantity }}</span>
+                                    <span>${{ item.price }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Right Column: Shipping Destination & Summary -->
+                <div class="col-lg-5">
+                    <!-- Delivery Address Card -->
+                    <div class="info-card-box mb-4">
+                        <div class="info-card-title">
+                            <i class="fas fa-location-dot"></i> Delivery Destination
+                        </div>
+                        <div class="address-content">
+                            <div class="address-name mb-1">
+                                {{ order.first_name }} {{ order.last_name }}
+                            </div>
+                            <p class="mb-1 text-secondary">
+                                {{ order.address }}
+                            </p>
+                            <p class="mb-2 text-secondary">
+                                {{ order.city }}, {{ order.state }} {{ order.zip_code }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Dispatch Info -->
+                    <div class="info-card-box mb-4">
+                        <div class="info-card-title">
+                            <i class="fas fa-truck-ramp-box"></i> Shipping Details
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span class="text-muted">Method:</span>
+                            <span class="fw-semibold">{{ order.get_shipping_method_display }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span class="text-muted">Payment:</span>
+                            <span class="fw-semibold">{{ order.get_payment_method_display }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between small">
+                            <span class="text-muted">Total:</span>
+                            <span class="fw-bold text-primary">${{ order.total_amount }}</span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'shop:order_list' %}" class="btn-action-secondary justify-content-center">
+                            <i class="fas fa-arrow-left"></i> All Orders
+                        </a>
+                        <a href="{% url 'shop:product_list' %}" class="btn-action-outline justify-content-center">
+                            <i class="fas fa-bag-shopping"></i> Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

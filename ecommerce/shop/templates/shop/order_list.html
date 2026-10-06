@@ -1,0 +1,98 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}My Orders - Swiftbuy{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 1050px;">
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">Order History</h1>
+            <p class="text-muted small mb-0">Track and manage your past purchases and current shipments.</p>
+        </div>
+        <a href="{% url 'shop:product_list' %}" class="btn-action-primary" style="text-decoration: none;">
+            <i class="fas fa-bag-shopping"></i> Continue Shopping
+        </a>
+    </div>
+
+    {% if orders %}
+    <div class="d-flex flex-column gap-3">
+        {% for order in orders %}
+        <div class="card border border-light-subtle rounded-4 shadow-sm hover-shadow transition-all overflow-hidden">
+            <!-- Card Header -->
+            <div class="card-header bg-light-subtle py-3 px-4 border-bottom border-light-subtle d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <div>
+                        <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Order Placed</div>
+                        <div class="fw-semibold text-dark small">{{ order.created_at|date:"M d, Y" }}</div>
+                    </div>
+                    <div class="border-start ps-3">
+                        <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Total Amount</div>
+                        <div class="fw-bold text-primary small">${{ order.total_amount }}</div>
+                    </div>
+                    <div class="border-start ps-3 d-none d-md-block">
+                        <div class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">Ship To</div>
+                        <div class="fw-semibold text-dark small">{{ order.first_name }} {{ order.last_name }}</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="status-badge status-{{ order.status }}">
+                        {{ order.get_status_display }}
+                    </span>
+                    <span class="text-muted small font-monospace">#{{ order.tracking_number }}</span>
+                </div>
+            </div>
+
+            <!-- Card Body: Items Preview & Actions -->
+            <div class="card-body p-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <h6 class="fw-bold text-dark mb-1">
+                        {{ order.items.count }} item{{ order.items.count|pluralize }} in this order
+                    </h6>
+                    <div class="text-muted small">
+                        {% for item in order.items.all|slice:":3" %}
+                            <span>{{ item.product.name }} (x{{ item.quantity }}){% if not forloop.last %}, {% endif %}</span>
+                        {% endfor %}
+                        {% if order.items.count > 3 %}
+                            <span class="text-primary">+{{ order.items.count|add:"-3" }} more</span>
+                        {% endif %}
+                    </div>
+                    {% if order.estimated_delivery %}
+                    <div class="mt-2 text-success small">
+                        <i class="fas fa-calendar-check me-1"></i>
+                        Est. Delivery: <strong>{{ order.estimated_delivery|date:"M d, Y" }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'shop:track_order' %}?order_number={{ order.tracking_number }}" class="btn-action-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        <i class="fas fa-location-crosshairs"></i> Track Shipment
+                    </a>
+                    <a href="{% url 'shop:order_detail' order_id=order.id %}" class="btn-action-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        <i class="fas fa-circle-info"></i> Details
+                    </a>
+                    <a href="{% url 'shop:order_invoice' order_id=order.id %}" class="btn-action-secondary" target="_blank" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        <i class="fas fa-file-pdf text-danger"></i> Invoice
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 my-5">
+        <div class="mb-3">
+            <i class="fas fa-box-open fa-4x text-muted opacity-50"></i>
+        </div>
+        <h4 class="fw-bold text-dark">No orders found</h4>
+        <p class="text-muted">You haven't placed any orders with us yet. Ready to find something amazing?</p>
+        <a href="{% url 'shop:product_list' %}" class="btn-action-primary mt-3">
+            <i class="fas fa-bag-shopping"></i> Explore Catalog
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

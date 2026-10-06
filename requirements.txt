@@ -1,0 +1,21 @@
+# Core Django
+Django>=5.1,<5.2
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+dj-database-url>=2.1.0
+psycopg2-binary>=2.9.10
+python-dotenv>=1.0.0
+django-model-utils>=5.0.0
+
+# Media & Images
+pillow>=10.0.0
+cloudinary>=1.40.0
+django-cloudinary-storage>=0.3.0
+
+# PDF & Invoicing
+xhtml2pdf>=0.2.17
+reportlab>=4.0.0
+pypdf>=5.0.0
+
+# Utilities
+requests>=2.31.0

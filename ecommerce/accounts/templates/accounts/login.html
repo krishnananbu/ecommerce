@@ -1,0 +1,116 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Login - Choose Your Role{% endblock %}
+
+{% block content %}
+<div class="login-choice-wrapper py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold display-5">Welcome to <span class="text-primary">Swiftbuy</span></h2>
+            <p class="lead text-muted">Please select your login type to continue</p>
+        </div>
+
+        <div class="row justify-content-center g-4">
+            <!-- Customer Login Choice -->
+            <div class="col-md-5 col-lg-4">
+                <a href="{% url 'accounts:customer_login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" class="text-decoration-none h-100 d-block">
+                    <div class="role-card card h-100 p-4 shadow-sm border-0 text-center">
+                        <div class="role-icon-wrapper">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-3">Customer Portal</h4>
+                        <p class="text-muted small mb-4">Shop products, track orders, and manage your account.</p>
+                        <div class="btn btn-primary w-100 rounded-pill py-2 fw-bold">Enter Store <i
+                                class="fas fa-arrow-right ms-2 small"></i></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Admin Login Choice -->
+            <div class="col-md-5 col-lg-4">
+                <a href="{% url 'accounts:admin_login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" class="text-decoration-none h-100 d-block">
+                    <div class="role-card card h-100 p-4 shadow-sm border-0 text-center">
+                        <div class="role-icon-wrapper">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-3">Admin Portal</h4>
+                        <p class="text-muted small mb-4">Manage products, inventory, and view analytics dashboard.</p>
+                        <div class="btn btn-outline-dark w-100 rounded-pill py-2 fw-bold">Manage Site <i
+                                class="fas fa-cog ms-2 small"></i></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <p class="text-muted">Don't have an account yet? <a href="{% url 'accounts:register' %}"
+                    class="text-primary fw-bold">Sign up here</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .login-choice-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .choice-card {
+        background: white;
+        border-radius: 24px;
+        border: 2px solid transparent;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .choice-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: rgba(53, 119, 240, 0.1);
+    }
+
+    .customer-card:hover {
+        border-color: var(--primary);
+    }
+
+    .admin-card:hover {
+        border-color: #333;
+    }
+
+    .icon-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bg-primary-light {
+        background: rgba(53, 119, 240, 0.1);
+    }
+
+    .bg-dark-light {
+        background: rgba(33, 37, 41, 0.1);
+    }
+
+    .choice-card ul li {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        color: #555;
+    }
+
+    .transition {
+        transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .choice-card {
+            padding: 30px !important;
+        }
+    }
+</style>
+{% endblock %}

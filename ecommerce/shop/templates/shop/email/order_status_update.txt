@@ -1,0 +1,29 @@
+Order Status Update
+
+Dear {{ order.first_name }},
+
+Your order #{{ order.id }} has been updated.
+
+Current Status: {{ status }}
+
+Tracking Number: {{ tracking_number }}
+
+{% if order.status == 'shipped' %}
+Your order is on its way! You can track your delivery using the tracking number above.
+{% elif order.status == 'delivered' %}
+Your order has been delivered. We hope you enjoy your purchase!
+{% elif order.status == 'processing' %}
+We're currently processing your order and will update you when it ships.
+{% elif order.status == 'cancelled' %}
+Your order has been cancelled. If you have any questions, please contact our support team.
+{% endif %}
+
+Order Details:
+{% for item in order.items.all %}
+- {{ item.product.name }} x {{ item.quantity }}
+{% endfor %}
+
+Total Amount: ${{ order.total_amount }}
+
+Thank you for shopping with us!
+If you have any questions, please don't hesitate to contact us.

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            line-height: 1.6; 
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header { 
+            background: linear-gradient(135deg, #3577F0 0%, #0d6efd 100%);
+            color: white; 
+            padding: 30px 20px; 
+            text-align: center; 
+        }
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .content { 
+            padding: 40px 30px;
+            background: white;
+        }
+        .welcome-text {
+            font-size: 24px;
+            color: #3577F0;
+            margin-bottom: 20px;
+        }
+        .button { 
+            background: linear-gradient(135deg, #3577F0 0%, #0d6efd 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: transform 0.3s ease;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .features-list {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .features-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .features-list li:before {
+            content: "✓";
+            color: #3577F0;
+            position: absolute;
+            left: 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="data:image/png;base64,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"
+                 alt="Swiftbuy" 
+                 class="logo" 
+                 style="max-width: 180px; height: auto; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto;">
+            <h1 style="margin-top: 20px;">Welcome to the Swiftbuy Family!</h1>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-text">Hello {{ user.first_name }}!</div>
+            
+            <p>Thank you for joining Swiftbuy! We're thrilled to welcome you to our community of smart shoppers. Get ready for an amazing shopping experience!</p>
+            
+            <div class="features-list">
+                <p><strong>Your Swiftbuy account gives you access to:</strong></p>
+                <ul>
+                    <li>Browse our curated collection of premium products</li>
+                    <li>Create and manage your personal wishlist</li>
+                    <li>Track your orders in real-time</li>
+                    <li>Get exclusive deals and special offers</li>
+                    <li>Earn rewards on every purchase</li>
+                </ul>
+            </div>
+            
+            <center>
+                <a href="{{ site_url }}" class="button">Start Your Shopping Journey</a>
+            </center>
+
+            <p>We're here to help! If you have any questions or need assistance, our friendly support team is just a click away.</p>
+            
+            <p style="margin-top: 30px;">
+                Happy Shopping!<br>
+                <strong>The Swiftbuy Team</strong>
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>© {% now "Y" %} Swiftbuy. All rights reserved.</p>
+            <p>This email was sent to {{ user.email }}</p>
+        </div>
+    </div>
+</body>
+</html>

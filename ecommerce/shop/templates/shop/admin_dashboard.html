@@ -1,0 +1,537 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Swiftbuy Admin{% endblock %}
+
+{% block content %}
+<div class="row g-0 admin-layout">
+    <!-- Sidebar -->
+    <div class="col-md-3 col-lg-2 admin-sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-user-shield me-2"></i> Admin Panel
+        </div>
+        <div class="nav flex-column sidebar-nav" id="admin-menu">
+            <a href="#" class="nav-link active">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+
+            <div class="nav-section-label">Management</div>
+
+            <a href="{% url 'admin:auth_user_changelist' %}" class="nav-link">
+                <i class="fas fa-users"></i> Customers
+            </a>
+            <a href="{% url 'admin:shop_product_changelist' %}" class="nav-link">
+                <i class="fas fa-box"></i> Products
+            </a>
+            <a href="{% url 'admin:shop_category_changelist' %}" class="nav-link">
+                <i class="fas fa-tags"></i> Categories
+            </a>
+            <a href="{% url 'admin:shop_brand_changelist' %}" class="nav-link">
+                <i class="fas fa-copyright"></i> Brands
+            </a>
+            <a href="{% url 'admin:shop_order_changelist' %}" class="nav-link">
+                <i class="fas fa-shopping-cart"></i> Orders
+            </a>
+            <a href="{% url 'admin:shop_review_changelist' %}" class="nav-link">
+                <i class="fas fa-star"></i> Reviews
+            </a>
+            <a href="{% url 'admin:shop_coupon_changelist' %}" class="nav-link">
+                <i class="fas fa-ticket-alt"></i> Coupons
+            </a>
+
+            <div class="nav-section-label">Configuration</div>
+
+            <a href="{% url 'admin:shop_homepagebanner_changelist' %}" class="nav-link">
+                <i class="fas fa-images"></i> Banners
+            </a>
+            <a href="{% url 'admin:shop_shippingcourier_changelist' %}" class="nav-link">
+                <i class="fas fa-shipping-fast"></i> Couriers
+            </a>
+            <a href="{% url 'admin:shop_sitesettings_changelist' %}" class="nav-link">
+                <i class="fas fa-cogs"></i> Site Settings
+            </a>
+
+            <div class="nav-section-label">Support</div>
+
+            <a href="{% url 'admin:shop_supportticket_changelist' %}" class="nav-link">
+                <i class="fas fa-headset"></i> Tickets
+            </a>
+            <a href="{% url 'admin:shop_transaction_changelist' %}" class="nav-link">
+                <i class="fas fa-exchange-alt"></i> Transactions
+            </a>
+
+            <div class="nav-section-label">System</div>
+            <a href="/" class="nav-link mt-auto">
+                <i class="fas fa-external-link-alt"></i> View Website
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9 col-lg-10 p-4 main-bg">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="dashboard-title mb-0">Analytics & Reports Dashboard v3</h2>
+                <span class="text-muted small">Welcome back, <strong>{{
+                        request.user.first_name|default:request.user.username }}</strong></span>
+            </div>
+            <div class="text-muted small dashboard-date">
+                <i class="far fa-calendar-alt me-1"></i> {% now "F j, Y" %}
+            </div>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper bg-soft-primary">
+                            <i class="fas fa-shopping-cart text-primary"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Total Sales (Life)</span>
+                            <h3 class="stat-value text-dark">${{ total_sales|floatformat:2 }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper bg-soft-success">
+                            <i class="fas fa-chart-line text-success"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Sales (This Month)</span>
+                            <h3 class="stat-value text-dark">${{ month_sales|floatformat:2 }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper bg-soft-info">
+                            <i class="fas fa-box-open text-info"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Total Orders</span>
+                            <h3 class="stat-value text-dark">{{ total_orders }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper bg-soft-warning">
+                            <i class="fas fa-clock text-warning"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Pending Orders</span>
+                            <h3 class="stat-value text-dark">{{ pending_orders_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper bg-soft-info">
+                            <i class="fas fa-user-friends text-info"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Active Customers</span>
+                            <h3 class="stat-value text-dark">{{ total_customers }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Best Selling Products Table -->
+            <div class="col-lg-7">
+                <div class="content-card">
+                    <div class="card-header-premium">
+                        <h5 class="m-0"><i class="fas fa-fire text-danger me-2"></i> Best Selling Products</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table premium-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Units Sold</th>
+                                    <th class="text-end">Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in best_sellers %}
+                                <tr>
+                                    <td><span class="fw-semibold text-dark">{{ item.product__name }}</span></td>
+                                    {% with ts=item.total_sold tr=item.total_revenue %}
+                                    <td class="text-center"><span
+                                            class="badge bg-soft-secondary text-dark">{{ts}}</span></td>
+                                    <td class="text-end fw-bold text-primary">${{tr|floatformat:2}}</td>
+                                    {% endwith %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Alerts Table -->
+            <div class="col-lg-5">
+                <div class="content-card">
+                    <div class="card-header-premium">
+                        <h5 class="m-0"><i class="fas fa-exclamation-triangle text-warning me-2"></i> Inventory Alerts
+                        </h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table premium-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Stock</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in inventory_alerts %}
+                                <tr>
+                                    <td><span class="text-dark small">{{ product.name }}</span></td>
+                                    <td class="text-center">
+                                        <span
+                                            class="badge {% if product.stock <= 5 %}bg-soft-danger text-danger{% else %}bg-soft-warning text-warning{% endif %}">{{
+                                            product.stock }} left</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'admin:shop_product_change' product.id %}"
+                                            class="btn btn-tiny btn-outline-primary">Update</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center py-5 text-muted small">
+                                        <i class="fas fa-check-circle text-success mb-2 d-block fa-2x"></i>
+                                        All items well stocked.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Recent Transactions Table -->
+            <div class="col-lg-7">
+                <div class="content-card">
+                    <div class="card-header-premium">
+                        <h5 class="m-0"><i class="fas fa-exchange-alt text-primary me-2"></i> Recent Transactions</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table premium-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tx in recent_transactions %}
+                                <tr>
+                                    <td class="small text-muted">{{ tx.transaction_id|truncatechars:18 }}</td>
+                                    <td class="text-center">
+                                        {% if tx.status == 'success' %}
+                                        <span class="badge bg-soft-success text-success">Success</span>
+                                        {% else %}
+                                        <span class="badge bg-soft-danger text-danger">Failed</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end fw-bold text-dark">${{ tx.amount }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales by Category Table -->
+            <div class="col-lg-5">
+                <div class="content-card">
+                    <div class="card-header-premium d-flex justify-content-between align-items-center">
+                        <h5 class="m-0"><i class="fas fa-layer-group text-info me-2"></i> Sales by Category</h5>
+                    </div>
+                    <div class="p-3">
+                        <div style="height: 250px;">
+                            <canvas id="categorySalesChart"></canvas>
+                        </div>
+                        <div class="data-list mt-3">
+                            {% for item in sales_by_category %}
+                            <div
+                                class="d-flex justify-content-between align-items-center py-2 border-bottom last-no-border">
+                                <span class="text-muted small">{{ item.product__category__name }}</span>
+                                <span class="fw-bold text-dark">${{ item.total_rev_display }}</span>
+                            </div>
+                            {% empty %}
+                            <div class="py-5 text-center text-muted small">No category data.</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Premium Design System */
+    .admin-layout {
+        background: #f8faff;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #eef2f6;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Sidebar Styling */
+    .admin-sidebar {
+        background: #1e293b;
+        color: rgba(255, 255, 255, 0.7);
+        padding: 0;
+        min-height: 85vh;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-header {
+        padding: 24px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .sidebar-nav {
+        padding: 16px;
+    }
+
+    .sidebar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.6);
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 4px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+    }
+
+    .sidebar-nav .nav-link i {
+        width: 24px;
+        font-size: 0.9rem;
+        margin-right: 8px;
+    }
+
+    .sidebar-nav .nav-link:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+    }
+
+    .sidebar-nav .nav-link.active {
+        background: #3577f0;
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(53, 119, 240, 0.3);
+    }
+
+    .nav-section-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.65);
+        padding: 16px 16px 8px;
+        letter-spacing: 1px;
+    }
+
+    /* Stats Cards */
+    .stat-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #eef2f6;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .stat-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* Color Accents */
+    .bg-soft-primary {
+        background: rgba(53, 119, 240, 0.1);
+    }
+
+    .bg-soft-success {
+        background: rgba(16, 185, 129, 0.1);
+    }
+
+    .bg-soft-info {
+        background: rgba(14, 165, 233, 0.1);
+    }
+
+    .bg-soft-warning {
+        background: rgba(245, 158, 11, 0.1);
+    }
+
+    .bg-soft-danger {
+        background: rgba(239, 68, 68, 0.1);
+    }
+
+    .bg-soft-secondary {
+        background: rgba(100, 116, 139, 0.08);
+    }
+
+    /* Tables & Content Cards */
+    .content-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #eef2f6;
+        overflow: hidden;
+        height: 100%;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header-premium {
+        padding: 20px;
+        border-bottom: 1px solid #f1f5f9;
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+
+    .premium-table thead th {
+        background: #f8fafc;
+        border-top: none;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #64748b;
+        padding: 12px 20px;
+        font-weight: 700;
+    }
+
+    .premium-table tbody td {
+        padding: 14px 20px;
+        vertical-align: middle;
+        font-size: 0.875rem;
+        border-bottom: 1px solid #f8fafc;
+    }
+
+    .premium-table tbody tr:hover {
+        background: #fcfdfe;
+    }
+
+    .badge {
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+
+    .btn-tiny {
+        padding: 4px 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        border-radius: 6px;
+    }
+
+    .dashboard-title {
+        font-weight: 800;
+        color: #1e293b;
+        letter-spacing: -0.5px;
+    }
+
+    .last-no-border:last-child {
+        border-bottom: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctxCategories = document.getElementById('categorySalesChart');
+        if (ctxCategories) {
+            new Chart(ctxCategories, {
+                type: 'doughnut',
+                data: {
+                    labels: [{% for item in sales_by_category %}"{{ item.product__category__name }}"{% if not forloop.last %}, {% endif %} {% endfor %}],
+        datasets: [{
+            data: [{% for item in sales_by_category %}{{ item.total_rev_display }}{% if not forloop.last %}, {% endif %} {% endfor %}],
+    backgroundColor: [
+        '#3577f0',
+        '#10b981',
+        '#0ea5e9',
+        '#f59e0b',
+        '#ef4444',
+        '#6366f1',
+        '#8b5cf6',
+        '#ec4899'
+    ],
+        borderWidth: 0,
+            hoverOffset: 10
+                    }]
+                },
+    options: {
+        responsive: true,
+            maintainAspectRatio: false,
+                plugins: {
+            legend: {
+                display: false
+            }
+        },
+        cutout: '70%'
+    }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Swiftbuy {% endblock %}
+
+{% block content %}
+<div class="row g-5">
+    <div class="col-md-6">
+        <div class="product-detail-image-wrapper p-4 bg-light rounded-4 shadow-sm text-center d-flex align-items-center justify-content-center" style="min-height: 440px;">
+            {% if product.image %}
+            <img id="main-product-image" src="{{ product.image.url }}" class="img-fluid rounded-3" alt="{{ product.name }}"
+                style="max-height: 450px; width: auto; object-fit: contain; transition: var(--transition);">
+            {% else %}
+            <div class="bg-light rounded-4 d-flex align-items-center justify-content-center"
+                style="height: 440px; width: 100%;">
+                <i class="fas fa-image fa-5x" style="color: var(--primary); opacity: 0.3;"></i>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Additional Images -->
+        {% if product.images.all %}
+        <div class="row mt-3 g-2">
+            <div class="col-3">
+                <img src="{{ product.image.url }}" class="img-fluid rounded-3 border p-1 bg-white hover-scale shadow-sm"
+                    alt="{{ product.name }}" style="cursor: pointer; height: 75px; width: 100%; object-fit: contain;"
+                    onclick="document.getElementById('main-product-image').src=this.src;">
+            </div>
+            {% for image in product.images.all %}
+            <div class="col-3">
+                <img src="{{ image.image.url }}" class="img-fluid rounded-3 border p-1 bg-white hover-scale shadow-sm"
+                    alt="{{ image.alt_text }}" style="cursor: pointer; height: 75px; width: 100%; object-fit: contain;"
+                    onclick="document.getElementById('main-product-image').src=this.src;">
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6">
+        <div class="product-detail-content">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}"
+                            class="text-decoration-none text-muted small">Products</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'shop:category_products' product.category.slug %}"
+                            class="text-decoration-none text-muted small">{{ product.category.name }}</a></li>
+                    <li class="breadcrumb-item active small" aria-current="page">{{ product.name }}</li>
+                </ol>
+            </nav>
+
+            <h1 class="fw-bold mb-2">{{ product.name }}</h1>
+            <p class="text-muted mb-4">Brand: <span class="text-dark fw-600">{{ product.brand.name }}</span></p>
+
+            {% if product.featured %}
+            <span class="badge bg-dark text-white mb-4 px-3 py-2"><i class="fas fa-star me-1"></i> Featured
+                Product</span>
+            {% endif %}
+
+            <div class="d-flex align-items-center gap-3 mb-2">
+                <span class="prominent-price">${{ product.price }}</span>
+                {% if product.original_price %}
+                <div class="d-flex flex-column">
+                    <span class="text-muted text-decoration-line-through small">${{ product.original_price }}</span>
+                    <span class="badge" style="background-color: var(--primary); color: white;">SAVE {{
+                        product.discount_percentage }}%</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                {% if product.stock > 0 %}
+                {% with s=product.stock %}
+                <span class="text-success small fw-bold"><i class="fas fa-check-circle me-1"></i> In Stock ({{s}} items
+                    available)</span>
+                {% endwith %}
+                {% else %}
+                <span class="text-danger small fw-bold"><i class="fas fa-times-circle me-1"></i> Currently Out of
+                    Stock</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-bold text-uppercase small text-muted mb-3">Description</h6>
+                <p class="text-secondary leading-relaxed">{{ product.description|linebreaks }}</p>
+            </div>
+
+            <div class="mb-4 p-3 bg-light rounded-3">
+                <h6 class="fw-bold text-uppercase small text-muted mb-3">Specifications</h6>
+                <div class="row g-2">
+                    <div class="col-6 small text-muted">Category:</div>
+                    <div class="col-6 small fw-bold text-dark">{{ product.category.name }}</div>
+                    <div class="col-6 small text-muted">Brand:</div>
+                    <div class="col-6 small fw-bold text-dark">{{ product.brand.name }}</div>
+                    <div class="col-6 small text-muted">SKU:</div>
+                    <div class="col-6 small fw-bold text-dark">SB-{{ product.id|stringformat:"05d" }}</div>
+                </div>
+            </div>
+
+            {% if product.stock > 0 %}
+            <form action="{% url 'shop:cart_add' product.id %}" method="post" class="product-add-to-cart-form">
+                {% csrf_token %}
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <div class="quantity-input-wrapper" style="width: 120px;">
+                        <label class="small text-muted mb-2 d-block">Quantity</label>
+                        {{ cart_product_form.quantity }}
+                    </div>
+                    {{ cart_product_form.override }}
+                    <div class="flex-grow-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 shadow-sm hover-lift">
+                            <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {% else %}
+            <div class="alert alert-secondary d-flex align-items-center mb-4">
+                <i class="fas fa-exclamation-triangle text-warning me-2 fa-lg"></i>
+                <div>
+                    <strong>Temporarily Out of Stock</strong>
+                    <div class="small text-muted">This product is currently unavailable. Please check back later.</div>
+                </div>
+            </div>
+            <button class="btn btn-secondary btn-lg w-100 py-3 mb-4" disabled>
+                <i class="fas fa-ban me-2"></i> Out of Stock
+            </button>
+            {% endif %}
+
+            <div class="trust-signals">
+                <div class="trust-signal-item">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>Reliable Shipping</span>
+                </div>
+                <div class="trust-signal-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Payment</span>
+                </div>
+                <div class="trust-signal-item">
+                    <i class="fas fa-undo"></i>
+                    <span>30-Day Returns</span>
+                </div>
+            </div>
+
+            <!-- Sticky Mobile Add to Cart Bar -->
+            <div class="sticky-mobile-cart shadow-lg border-top" id="stickyCart">
+                <div class="d-flex align-items-center flex-grow-1 overflow-hidden">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="" style="width: 40px; height: 40px; object-fit: cover;"
+                        class="rounded me-2">
+                    {% else %}
+                    <div class="rounded me-2 bg-light d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px;">
+                        <i class="fas fa-image text-muted small"></i>
+                    </div>
+                    {% endif %}
+                    <div class="text-truncate">
+                        <div class="fw-bold small text-truncate">{{ product.name }}</div>
+                        <div class="text-primary fw-bold small">${{ product.price }}</div>
+                    </div>
+                </div>
+                {% if product.stock > 0 %}
+                <form action="{% url 'shop:cart_add' product.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+                {% else %}
+                <button class="btn btn-secondary btn-sm" disabled>Out of Stock</button>
+                {% endif %}
+            </div>
+
+            <button type="button" class="btn btn-outline-danger mt-3" id="wishlistBtn" onclick="toggleWishlist(this)">
+                <i class="far fa-heart me-1"></i> Add to Wishlist
+            </button>
+            <script>
+                function toggleWishlist(btn) {
+                    const icon = btn.querySelector('i');
+                    if (icon.classList.contains('far')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        btn.classList.remove('btn-outline-danger');
+                        btn.classList.add('btn-danger');
+                        btn.innerHTML = '<i class="fas fa-heart me-1"></i> Saved to Wishlist';
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-outline-danger');
+                        btn.innerHTML = '<i class="far fa-heart me-1"></i> Add to Wishlist';
+                    }
+                }
+            </script>
+        </div> <!-- Close product-detail-content -->
+    </div>
+</div>
+
+<!-- Related Products -->
+{% if related_products %}
+<div class="mt-5">
+    <h3>Related Products</h3>
+    <div class="row">
+        {% for product in related_products %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+                    style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                    style="height: 200px;">
+                    <i class="fas fa-image fa-2x text-muted"></i>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <h6 class="card-title">{{ product.name }}</h6>
+                    <p class="card-text text-primary">${{ product.price }}</p>
+                    <a href="{{ product.get_absolute_url }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

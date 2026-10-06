@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django
+*.log
+logs/
+**/logs/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+**/db.sqlite3
+**/db.sqlite3-journal
+media/
+**/media/
+staticfiles/
+**/staticfiles/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node / Frontend
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db

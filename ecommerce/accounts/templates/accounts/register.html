@@ -1,0 +1,687 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Create Account - Swiftbuy{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="auth-box">
+                    <div class="register-header text-center mb-4">
+                        <div class="icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h2 class="fw-bold">Create Account</h2>
+                        <p class="text-muted">Join Swiftbuy to start shopping</p>
+                    </div>
+
+                    <form action="{% url 'accounts:register' %}" method="post" id="registerForm" class="auth-form">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text"
+                                        class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                                        id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}"
+                                        placeholder="First Name" required>
+                                    <label for="first_name">First Name</label>
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                {% if form.first_name.errors %}
+                                <div class="field-error">
+                                    <i class="fas fa-exclamation-circle"></i> {{ form.first_name.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text"
+                                        class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                                        id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}"
+                                        placeholder="Last Name" required>
+                                    <label for="last_name">Last Name</label>
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                {% if form.last_name.errors %}
+                                <div class="field-error">
+                                    <i class="fas fa-exclamation-circle"></i> {{ form.last_name.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="text"
+                                    class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                    id="username" name="username" value="{{ form.username.value|default:'' }}"
+                                    placeholder="Username" required>
+                                <label for="username">Username</label>
+                                <i class="fas fa-at input-icon"></i>
+                            </div>
+                            {% if form.username.errors %}
+                            <div class="field-error">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.username.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                    id="email" name="email" value="{{ form.email.value|default:'' }}"
+                                    placeholder="Email" required>
+                                <label for="email">Email Address</label>
+                                <i class="fas fa-envelope input-icon"></i>
+                            </div>
+                            {% if form.email.errors %}
+                            <div class="field-error">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.email.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating password-field">
+                                <input type="password"
+                                    class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                    id="password1" name="password1" placeholder="Password" required>
+                                <label for="password1">Password</label>
+                                <button type="button" class="btn btn-link password-toggle" id="togglePassword1">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password1.errors %}
+                            <div class="field-error">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.password1.errors.0 }}
+                            </div>
+                            {% endif %}
+                            <div class="password-strength mt-2" id="passwordStrength">
+                                <div class="progress" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small class="strength-text text-muted mt-1 d-block">Password strength</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-floating password-field">
+                                <input type="password"
+                                    class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                    id="password2" name="password2" placeholder="Confirm Password" required>
+                                <label for="password2">Confirm Password</label>
+                                <button type="button" class="btn btn-link password-toggle" id="togglePassword2">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password2.errors %}
+                            <div class="field-error">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.password2.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#termsModal" class="text-decoration-none">Terms of Service</a> and <a
+                                        href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#privacyModal" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Display non-field errors -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            {{ form.non_field_errors.0 }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary w-100 btn-lg mb-4" id="registerBtn">
+                            Create Account
+                        </button>
+
+                        <!-- Keep general messages below button -->
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} alert-dismissible fade show mb-3"
+                            role="alert">
+                            <i
+                                class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <div class="text-center">
+                            <p class="text-muted">
+                                Already have an account?
+                                <a href="{% url 'accounts:login' %}" class="text-decoration-none">Sign in</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-wrapper {
+        min-height: calc(100vh - 400px);
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #2196F3 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-box {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        position: relative;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(20px);
+    }
+
+    .auth-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 35px 70px rgba(0, 0, 0, 0.2);
+    }
+
+    .register-header .icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #0000FF, #0000CC);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        animation: pulse 2s infinite;
+    }
+
+    .register-header .icon i {
+        font-size: 24px;
+        color: white;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .form-floating {
+        position: relative;
+    }
+
+    .form-control {
+        height: 55px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem 1rem;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(53, 119, 240, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-control.valid {
+        border-color: #28a745;
+    }
+
+    .form-control.invalid,
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .form-floating label {
+        padding: 1rem 1rem;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+        font-size: 1.1rem;
+        z-index: 4;
+        pointer-events: none;
+    }
+
+    /* Field-specific error styling */
+    .field-error {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        animation: slideIn 0.3s ease;
+    }
+
+    .field-error i {
+        font-size: 12px;
+    }
+
+    .password-field {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--text);
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+    }
+
+    .password-toggle:hover {
+        color: var(--primary);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #2196F3 0%, #764ba2 100%);
+        border: none;
+        font-weight: 500;
+        height: 55px;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s;
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .alert-custom {
+        position: relative;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInDown 0.4s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-custom .alert-icon {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 18px;
+    }
+
+    .alert-custom .alert-content {
+        flex-grow: 1;
+    }
+
+    .alert-custom .alert-content strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 14px;
+    }
+
+    .alert-custom.alert-danger {
+        background: #fff2f2;
+        border-left: 4px solid #dc3545;
+    }
+
+    .alert-custom.alert-danger .alert-icon {
+        background: #dc3545;
+        color: white;
+    }
+
+    .alert-custom.alert-success {
+        background: #f0fff4;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-custom.alert-success .alert-icon {
+        background: #28a745;
+        color: white;
+    }
+
+    .alert-custom .btn-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .messages-container {
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .password-strength .progress-bar {
+        transition: all 0.3s ease;
+    }
+
+    .password-strength.weak .progress-bar {
+        width: 33%;
+        background-color: #dc3545;
+    }
+
+    .password-strength.medium .progress-bar {
+        width: 66%;
+        background-color: #ffc107;
+    }
+
+    .password-strength.strong .progress-bar {
+        width: 100%;
+        background-color: #28a745;
+    }
+
+    /* Floating shapes background animation */
+    .auth-wrapper::before,
+    .auth-wrapper::after {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        border-radius: 50%;
+        opacity: 0.1;
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .auth-wrapper::before {
+        top: -100px;
+        left: -100px;
+    }
+
+    .auth-wrapper::after {
+        bottom: -100px;
+        right: -100px;
+        animation-delay: -4s;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-30px) rotate(180deg);
+        }
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .auth-box {
+            padding: 30px 20px;
+            margin: 20px;
+        }
+
+        .auth-wrapper {
+            padding: 20px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Password toggle functionality
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // Password strength checker
+        const password1 = document.getElementById('password1');
+        const strengthIndicator = document.getElementById('passwordStrength');
+        const progressBar = strengthIndicator.querySelector('.progress-bar');
+        const strengthText = strengthIndicator.querySelector('.strength-text');
+
+        password1.addEventListener('input', function () {
+            const value = this.value;
+            let strength = 0;
+            let status = '';
+
+            if (value.length >= 8) strength += 1;
+            if (value.match(/[a-z]/)) strength += 1;
+            if (value.match(/[A-Z]/)) strength += 1;
+            if (value.match(/[0-9]/)) strength += 1;
+            if (value.match(/[^a-zA-Z0-9]/)) strength += 1;
+
+            switch (true) {
+                case (strength <= 2):
+                    status = 'weak';
+                    strengthText.textContent = 'Weak password';
+                    strengthText.className = 'strength-text text-danger mt-1 d-block';
+                    break;
+                case (strength <= 4):
+                    status = 'medium';
+                    strengthText.textContent = 'Medium password';
+                    strengthText.className = 'strength-text text-warning mt-1 d-block';
+                    break;
+                default:
+                    status = 'strong';
+                    strengthText.textContent = 'Strong password';
+                    strengthText.className = 'strength-text text-success mt-1 d-block';
+            }
+
+            strengthIndicator.className = `password-strength ${status} mt-2`;
+        });
+
+        // Form validation and submission
+        const form = document.getElementById('registerForm');
+        const inputs = document.querySelectorAll('.form-control');
+
+        // Real-time validation on blur
+        inputs.forEach(input => {
+            input.addEventListener('blur', function () {
+                if (this.value.trim() === '') {
+                    this.classList.add('invalid');
+                    this.classList.remove('valid');
+                } else {
+                    this.classList.remove('invalid');
+                    this.classList.add('valid');
+                }
+            });
+
+            input.addEventListener('input', function () {
+                this.classList.remove('invalid');
+                this.classList.remove('is-invalid');
+            });
+        });
+
+        // Password match validation
+        const password2 = document.getElementById('password2');
+        password2.addEventListener('input', function () {
+            const password1Value = password1.value;
+            if (this.value && this.value !== password1Value) {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            } else if (this.value) {
+                this.classList.remove('invalid');
+                this.classList.add('valid');
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            const password1Value = password1.value;
+            const password2Value = password2.value;
+            const submitBtn = document.getElementById('registerBtn');
+
+            if (password1Value !== password2Value) {
+                e.preventDefault();
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger alert-dismissible fade show';
+                alert.innerHTML = `
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Passwords do not match
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+                form.insertBefore(alert, form.firstChild);
+                password2.classList.add('invalid', 'shake');
+                setTimeout(() => password2.classList.remove('shake'), 500);
+                return;
+            }
+
+            submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Creating Account...
+        `;
+            submitBtn.disabled = true;
+        });
+
+        // Initial animations
+        const authBox = document.querySelector('.auth-box');
+        authBox.style.opacity = '0';
+        authBox.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            authBox.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            authBox.style.opacity = '1';
+            authBox.style.transform = 'translateY(0)';
+        }, 100);
+    });
+</script>
+
+<!-- Terms of Service Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="termsModalLabel">Terms of Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="fw-bold">1. Account Eligibility</h6>
+        <p class="text-muted small">By registering an account with Swiftbuy, you confirm that you are at least 18 years old and agree to provide accurate and complete registration information.</p>
+        <h6 class="fw-bold">2. Purchases and Orders</h6>
+        <p class="text-muted small">All orders placed through Swiftbuy are subject to product availability and order confirmation. We reserve the right to cancel or limit quantities on any order.</p>
+        <h6 class="fw-bold">3. Security and User Conduct</h6>
+        <p class="text-muted small">You are responsible for maintaining the confidentiality of your account credentials. Any activity under your account is your responsibility.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="privacyModalLabel">Privacy Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="fw-bold">1. Information We Collect</h6>
+        <p class="text-muted small">We collect personal details such as your name, email address, and shipping address when you create an account or make a purchase.</p>
+        <h6 class="fw-bold">2. How We Use Your Data</h6>
+        <p class="text-muted small">Your information is used solely for processing orders, communicating shipping updates, and improving your shopping experience. We never sell your personal data.</p>
+        <h6 class="fw-bold">3. Security</h6>
+        <p class="text-muted small">We utilize industry-standard 256-bit encryption and secure protocols to protect your personal and payment details.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

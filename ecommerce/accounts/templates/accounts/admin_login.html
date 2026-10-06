@@ -1,0 +1,178 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Admin Portal - Swiftbuy{% endblock %}
+
+{% block content %}
+<div class="admin-auth-wrapper py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="admin-auth-box">
+                    <div class="text-center mb-5">
+                        <div class="admin-icon mb-3">
+                            <i class="fas fa-user-shield fa-3x text-primary"></i>
+                        </div>
+                        <h2 class="fw-bold">Admin Portal</h2>
+                        <p class="text-muted">Secure access for administration</p>
+                    </div>
+
+                    <form method="post" action="{% url 'accounts:admin_login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" id="adminLoginForm" class="auth-form">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-user text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control bg-light border-start-0" id="username"
+                                    name="username" placeholder="Enter admin username" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label fw-semibold">Password</label>
+                                <a href="#" class="text-primary text-decoration-none small">Forgot?</a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-lock text-muted"></i>
+                                </span>
+                                <input type="password" class="form-control bg-light border-start-0" id="password"
+                                    name="password" placeholder="Enter password" required>
+                                <button type="button" class="btn btn-light border border-start-0 password-toggle">
+                                    <i class="far fa-eye text-muted"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me">
+                                <label class="form-check-label text-muted" for="remember_me">
+                                    Maintain session security
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 btn-lg mb-4 py-3 shadow-sm" id="loginBtn">
+                            <i class="fas fa-sign-in-alt me-2"></i> Authorized Sign In
+                        </button>
+
+                        {% if messages %}
+                        <div class="messages-container mb-4">
+                            {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show border-0 shadow-sm"
+                                role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="small text-muted mb-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Access is restricted to authorized personnel.
+                        </p>
+                        <a href="{% url 'accounts:customer_login' %}" class="text-decoration-none small fw-bold">
+                            <i class="fas fa-shopping-cart me-1"></i> Back to Customer Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-auth-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        background-color: #f4f7f6;
+    }
+
+    .admin-auth-box {
+        background: white;
+        border-radius: 20px;
+        padding: 50px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border-top: 5px solid var(--primary);
+    }
+
+    .input-group-text {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .form-control {
+        border-radius: 0 10px 10px 0;
+        padding: 12px 15px;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+        background-color: #fff !important;
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 255, 0.3);
+    }
+
+    .admin-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(0, 0, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .password-toggle {
+        border-radius: 0 10px 10px 0;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.querySelector('.password-toggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function () {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        }
+
+        const form = document.getElementById('adminLoginForm');
+        if (form) {
+            form.addEventListener('submit', function () {
+                const btn = document.getElementById('loginBtn');
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Authorizing...';
+                btn.disabled = true;
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,239 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Checkout - Swiftbuy{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Checkout</h2>
+
+    <div class="row">
+        <!-- Checkout Stepper -->
+        <div class="checkout-stepper mb-5">
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <div class="step-label">Cart</div>
+            </div>
+            <div class="step active">
+                <div class="step-number">2</div>
+                <div class="step-label">Checkout</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-label">Payment</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-label">Confirm</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Order Summary -->
+            <div class="col-md-4 order-md-2 mb-4">
+                <div class="order-summary-box shadow-sm">
+                    <h4 class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fw-bold">Order Summary</span>
+                        <span class="badge bg-primary rounded-pill">{{ cart|length }}</span>
+                    </h4>
+                    <ul class="list-group list-group-flush mb-3 bg-transparent">
+                        {% for item in cart %}
+                        <li class="list-group-item d-flex justify-content-between lh-sm bg-transparent px-0 border-0">
+                            <div>
+                                <h6 class="my-0 fw-600">{{ item.product.name }}</h6>
+                                <small class="text-muted">Qty: {{ item.quantity }}</small>
+                            </div>
+                            <span class="text-dark fw-bold">${{ item.total_price }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <hr class="my-3">
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal</span>
+                        <span id="subtotal" data-value="{{ cart.get_total_price }}" class="fw-bold">
+                            ${{ cart.get_total_price }}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Shipping</span>
+                        <span id="shipping-cost" class="text-primary fw-bold">$5.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Estimated Tax (10%)</span>
+                        <span id="tax-amount" class="text-dark fw-bold">$0.00</span>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="h5 fw-bold mb-0">Total</span>
+                        <strong id="total-amount" class="h5 fw-bold text-primary mb-0">
+                            ${{ cart.get_total_price }}
+                        </strong>
+                    </div>
+
+                    <!-- Security Badge -->
+                    <div class="text-center p-3 bg-white rounded border border-dashed mt-4">
+                        <i class="fas fa-lock text-primary me-2"></i>
+                        <span class="small text-muted fw-bold text-uppercase">Secure SSL Encryption</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Form -->
+            <div class="col-md-8 order-md-1">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <h4 class="mb-3">Contact Information</h4>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.first_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.last_name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.email.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.phone.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3 mt-4">Shipping Address</h4>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Delivery Address <span
+                                    class="text-danger">*</span></label>
+                            {{ form.address }}
+                            <small class="text-muted">Please enter your complete address including house/flat number and
+                                street name</small>
+                            {% if form.address.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {% for error in form.address.errors %}
+                                <div><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-5">
+                            <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.city.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="{{ form.state.id_for_label }}" class="form-label">State</label>
+                            {{ form.state }}
+                            {% if form.state.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.state.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="{{ form.zip_code.id_for_label }}" class="form-label">Zip Code</label>
+                            {{ form.zip_code }}
+                            {% if form.zip_code.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.zip_code.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3 mt-4">Payment Method</h4>
+                    <div class="my-3">
+                        {{ form.payment_method }}
+                        {% if form.payment_method.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.payment_method.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <h4 class="mb-3">Shipping Method</h4>
+                    <div class="my-3">
+                        {{ form.shipping_method }}
+                        {% if form.shipping_method.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.shipping_method.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <hr class="my-4">
+
+                    {% if messages %}
+                    <div class="messages mb-4">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-lg" id="place-order-btn" type="submit">
+                            <span class="spinner-border spinner-border-sm d-none" role="status"
+                                aria-hidden="true"></span>
+                            <span class="btn-text">Place Order</span>
+                        </button>
+                        <div class="text-center">
+                            <a href="{% url 'shop:cart_detail' %}" class="btn btn-outline-secondary">Return to Cart</a>
+                        </div>
+                    </div>
+                    <input type="hidden" name="order_submitted" value="true">
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block extra_js %}
+    <script src="{% static 'js/order.js' %}"></script>
+    {% endblock %}
